@@ -1,84 +1,72 @@
-
-import inquirer
-
 Listafilmes=[]
 alugados=[]
 
-def cadastrar():
-    filme=input('Nome do filme:').lower()
-    if filme in Listafilmes:
-        print('Filme já adicionado!')
+cont=1
+
+while cont==1:
+    print('-'*30)
+    print('BEM VINDO A LOCADORA')
+    print('OPÇÃO: 0 CADASTRAR FILMES')
+    print('OPÇÃO: 1 MOSTRAR DISPONIVEIS')
+    print('OPÇÃO: 2 DEVOLVER UM FILME')
+    print('OPÇÃO: 3 ALUGAR')
+    print('OPÇÃO: 4 SAIR')
+    print('-'*30)
+
+    opcao=int(input('OPÇÃO:'))
+
+    if opcao==0:
+        filme=input('Nome do filme:').lower()
+        if filme in Listafilmes:
+            print('Filme já adicionado!')
+        else:
+            Listafilmes.append(filme)
+            print('Filme adicionado!')
+
+    elif opcao==1:
+        if Listafilmes==[]:
+            opcao=int(input('Nenhum filme cadastrado. cadastrar novos? (S=1/N=0)'))
+            if opcao==1:
+                filme=input('Nome do filme:').lower()
+                if filme in Listafilmes:
+                    print('Filme já adicionado!')
+                else:
+                    Listafilmes.append(filme)
+                    print('Filme adicionado!')
+
+        else:
+            print('_'*20)
+            for i in range(len(Listafilmes)):
+                print(f'{i+1}º {Listafilmes[i]}')
+            print('_'*20)
+
+    elif opcao==2:
+        filme=input('Nome do filme:').lower()
+
+        if filme in alugados:
+            Listafilmes.append(filme)
+            alugados.remove(filme)
+            print('Filme devolvido!')
+        else:
+            print('filme  não havia sido alugado ou não esta cadastrado!')
+
+    elif opcao==3:
+        filme=input('Nome do filme:').lower()
+        if filme in alugados:
+            print('Filme ja alugado')
+
+        elif filme not in Listafilmes:
+            print('Filme inexistente no cadastro da locadora!')
+        else:
+            alugados.append(filme)
+            Listafilmes.remove(filme)
+            print('Filme alugado, aproveita e faça a devolução em até 30 dias!')
+
+    elif opcao==4:
+        cont=0
+
     else:
-        Listafilmes.append(filme)
-        print('Filme adicionado!')
+        print('Opção inválida!')
 
-def disponiveis():
 
-    if Listafilmes==[]:
-        opcao=int(input('Nenhum filme cadastrado. cadastrar novos? (S=1/N=0)'))
-        if opcao==1:
-            cadastrar(opcao)
-
-    else:
-        print('_'*20)
-        for i in range(len(Listafilmes)):
-            print(f'{i+1}º {Listafilmes[i]}')
-        print('_'*20)
-
-def devolucao():
-    filme=input('Nome do filme:').lower()
-
-    if filme in alugados:
-        Listafilmes.append(filme)
-        alugados.remove(filme)
-        print('Filme devolvido!')
-    else:
-        print('filme  não havia sido alugado ou não esta cadastrado!')
-
-def alugar():
-    filme=input('Nome do filme:').lower()
-    if filme in alugados:
-        opcao=int(input('Filme ja alugado. Escolher outro? (S=1/N=0)'))
-        if opcao==1:
-            alugar(opcao)
-
-    elif filme not in Listafilmes:
-        print('Filme inexistente no cadastro da locadora!')
-    else:
-        alugados.append(filme)
-        Listafilmes.remove(filme)
-        print('Filme alugado, aproveita e faça a devolução em até 30 dias!')
-
-def menu():
-    while True:
-        questions = [
-            inquirer.List(
-                "opcao",
-                message="🎬 Bem-vindo à locadora! Escolha uma opção",
-                choices=[
-                    ("Cadastrar Filme", 0),
-                    ("Mostrar Disponíveis", 1),
-                    ("Devolver um Filme", 2),
-                    ("Alugar", 3),
-                    ("Sair", 4),
-                ],
-            )
-        ]
-        resposta = inquirer.prompt(questions)
-
-        opcao = resposta["opcao"]
-
-        if opcao == 0:
-            cadastrar()
-        elif opcao == 1:
-            disponiveis()
-        elif opcao == 2:
-            devolucao()
-        elif opcao == 3:
-            alugar()
-        elif opcao == 4:
-            print("Obrigada e até logo :)")
-            break
-
-if __name__ == "__main__":
-    menu()
+print('Obrigada e ate logo :)')
