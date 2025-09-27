@@ -26,8 +26,8 @@ def depositar(usuario,valor):
     extratos.append(f'Depositado ✅: {valor}')
 
 def sacar(usuario, saque):
-    while saque>float(usuario[3]):
-        print('Saque inválido, digite um valor inferior')
+    while saque>float(usuario[3]) or saque<=0:
+        print('Saque inválido, digite um novo valor')
         saque=float(input("Valor do saque:"))
     usuario[3]=str(float(usuario[3])-saque)
     print("Saque realizado!")
@@ -112,8 +112,11 @@ while cont==1:
         depositar(usuario,deposito)
 
       elif opcao==2:
-        saque=float(input("Valor do saque:"))
-        sacar(usuario,saque)
+        if float(usuario[3])==0:
+           print("Saldo insuficiente!")
+        else:   
+          saque=float(input("Valor do saque:"))
+          sacar(usuario,saque)
 
       elif opcao==3:
         extrato()
