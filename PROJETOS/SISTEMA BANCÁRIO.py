@@ -95,7 +95,7 @@ while cont==1:
       print("OPÇÃO 2: SAQUE")
       print("OPÇÃO 3: APRESENTAR EXTRATO")
       print("OPÇÃO 4: SAIR DA CONTA")
-      #print("OPÇÃO 5: PAGAMENTO")# a mais
+      #print("OPÇÃO 5: PAGAMENTO PIX")# a mais
       #print("OPÇÃO 6: EMPRESTIMO/FINANCIAMENTO") # a mais
 
       opcao=int(input("Sua opção:"))
