@@ -7,17 +7,30 @@ alugados=[]
 def cadastrar():
     filme=input('Nome do filme:').lower()
     if filme in Listafilmes:
-        print('Filme já adicionado!')
+        print('Filme já adicionado!\n')
     else:
         Listafilmes.append(filme)
-        print('Filme adicionado!')
+        print('Filme adicionado!\n')
+
+def remover():
+    filme=input('Nome do filme:').lower()
+    if filme in Listafilmes:
+        Listafilmes.remove(filme)
+        print('Filme removido de cadastro!\n')
+    else:
+        print('nome não identificado em filmes cadastrados!\n')
 
 def disponiveis():
 
     if Listafilmes==[]:
         opcao=int(input('Nenhum filme cadastrado. cadastrar novos? (S=1/N=0)'))
+
+        while opcao!=1 and opcao!=0:
+            print("❌Resposta inválida, digite novamente")
+            opcao=int(input('Nenhum filme cadastrado. cadastrar novos? (S=1/N=0)'))
+
         if opcao==1:
-            cadastrar(opcao)
+            cadastrar()
 
     else:
         print('_'*20)
@@ -31,23 +44,28 @@ def devolucao():
     if filme in alugados:
         Listafilmes.append(filme)
         alugados.remove(filme)
-        print('Filme devolvido!')
+        print('Filme devolvido!\n')
     else:
-        print('filme  não havia sido alugado ou não esta cadastrado!')
+        print('filme  não havia sido alugado ou não esta cadastrado!\n')
 
 def alugar():
     filme=input('Nome do filme:').lower()
     if filme in alugados:
         opcao=int(input('Filme ja alugado. Escolher outro? (S=1/N=0)'))
+
+        while opcao!=1 and opcao!=0:
+            print("❌Resposta inválida, digite novamente")
+            opcao=int(input('Filme ja alugado. Escolher outro? (S=1/N=0)'))
+
         if opcao==1:
-            alugar(opcao)
+            alugar()
 
     elif filme not in Listafilmes:
-        print('Filme inexistente no cadastro da locadora!')
+        print('Filme inexistente no cadastro da locadora!\n')
     else:
         alugados.append(filme)
         Listafilmes.remove(filme)
-        print('Filme alugado, aproveita e faça a devolução em até 30 dias!')
+        print('Filme alugado, aproveita e faça a devolução em até 30 dias!\n')
 
 def menu():
     while True:
@@ -57,10 +75,11 @@ def menu():
                 message="🎬 Bem-vindo à locadora! Escolha uma opção",
                 choices=[
                     ("Cadastrar Filme", 0),
-                    ("Mostrar Disponíveis", 1),
-                    ("Devolver um Filme", 2),
-                    ("Alugar", 3),
-                    ("Sair", 4),
+                    ("Remover Cadastro de filme",1),
+                    ("Mostrar Disponíveis", 2),
+                    ("Devolver um Filme", 3),
+                    ("Alugar", 4),
+                    ("Sair", 5),
                 ],
             )
         ]
@@ -71,12 +90,14 @@ def menu():
         if opcao == 0:
             cadastrar()
         elif opcao == 1:
-            disponiveis()
+            remover()
         elif opcao == 2:
-            devolucao()
+            disponiveis()
         elif opcao == 3:
-            alugar()
+            devolucao()
         elif opcao == 4:
+            alugar()
+        elif opcao == 5:
             print("Obrigada e até logo :)")
             break
 
