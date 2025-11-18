@@ -1,3 +1,6 @@
+
+
+
 Listafilmes=[]
 alugados=[]
 

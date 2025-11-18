@@ -1,23 +1,34 @@
-import mysql.connector
-#n ta respondendo nada
+'''#conectei com o banco de dados do mysql !instalar o PYMYSQL!, ainda tentando criar as tabelas
+import pymysql.cursors
+
 DB_CONFIG = {
-    "host": "localhost",       
-    "user": "hoot",     
-    "password": "bolinhodegom4.",   
+    "host": "localhost",
+    "user": "root",
+    "password": "bolinhodegom4.",
     "database": "locadora",
     "port": 3306
 }
+conexao = None
 
 try:
-    conexao = mysql.connector.connect(**DB_CONFIG)
+    conexao = pymysql.connect(**DB_CONFIG)
+    if conexao:
+        print("Conexão PyMySQL bem-sucedida ao banco de dados MySQL!")
 
-    if conexao.is_connected():
-        print("Conexão bem-sucedida ao banco de dados MySQL!")
-
-except mysql.connector.Error as err:
-    print(f"Erro ao conectar ao MySQL: {err}")
+        comando= """
+    CREATE TABLE Filmes (
+        filme_id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+        titulo VARCHAR(100) NOT NULL,
+        ano_lancamento YEAR,
+        genero VARCHAR(50),
+        duracao_min INT
+    );"""
+                
+except Exception as e:
+    print(f"Erro ao conectar ao MySQL com PyMySQL: {e}")
 
 finally:
-    if 'conexao' in locals() and conexao.is_connected():
+    if conexao and conexao.open:
         conexao.close()
-        print("Conexão fechada.")
+        print("Conexão PyMySQL fechada.")'''
+
