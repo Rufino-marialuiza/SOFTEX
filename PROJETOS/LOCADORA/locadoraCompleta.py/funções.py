@@ -33,7 +33,7 @@ def disponiveis():
             cadastrar()
 
     else:
-        print('_'*20)
+        print('_'*20) #mostra todos os filmes mesmo os que estão alugados
         for i in range(len(Listafilmes)):
             print(f'{i+1}º {Listafilmes[i]}')
         print('_'*20)

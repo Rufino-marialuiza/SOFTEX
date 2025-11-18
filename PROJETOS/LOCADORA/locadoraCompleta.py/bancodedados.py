@@ -32,3 +32,29 @@ finally:
         conexao.close()
         print("Conexão PyMySQL fechada.")'''
 
+import pymysql
+
+DB_CONFIG = {
+    "host": "localhost",
+    "user": "root",
+    "password": "bolinhodegom4.",
+    "database": "locadora",
+    "port": 3306
+}
+
+try:
+    conexao= pymysql.connect(**DB_CONFIG)
+
+    cursor= conexao.cursor()
+    cursor.execute("CREATE TABLE Alugados ( filme_id INT NOT NULL AUTO_INCREMENT PRIMARY KEY, titulo VARCHAR(100) NOT NULL, ano_lancamento YEAR, genero VARCHAR(50),duracao_min INT)")
+    conexao.commit()
+
+except pymysql.Error as e:
+    print(f"❌ Erro ao conectar ou criar a tabela: {e}")
+    
+finally:
+    if 'cursor' in locals() and cursor:
+        cursor.close()
+    if 'conexao' in locals() and conexao:
+        conexao.close()
+    print("Conexão e cursor fechados.")   
