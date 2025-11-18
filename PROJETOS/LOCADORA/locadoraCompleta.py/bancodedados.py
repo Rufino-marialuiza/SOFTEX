@@ -1,10 +1,10 @@
 import mysql.connector
 #n ta respondendo nada
 DB_CONFIG = {
-    "host": "localhost",       # Ou o endereço IP/nome do host do seu servidor MySQL
-    "user": "hoot",     # Seu nome de usuário do MySQL
-    "password": "bolinhodegom4.",   # Sua senha do MySQL
-    "database": "locadora", # O nome do banco de dados que você quer usar
+    "host": "localhost",       
+    "user": "hoot",     
+    "password": "bolinhodegom4.",   
+    "database": "locadora",
     "port": 3306
 }
 
