@@ -1,12 +1,18 @@
 
-import pymysql
+import pymysql, os
+from dotenv import load_dotenv
+load_dotenv()
 #criar função de atualizar dados de filmes
 DB_CONFIG = {
-    "host": "localhost",
-    "user": "root",
-    "password": "bolinhodegom4.",
-    "database": "locadora",
-    "port": 3306}
+    "host": os.getenv("DB_HOST"),
+    "user": os.getenv("DB_USER"),
+    "password": os.getenv("DB_PASSWORD"),
+    "database": os.getenv("DB_DATABASE"),
+    "port": int(os.getenv("DB_PORT", 3306))
+}
+
+conexao = None
+cursor = None
 
 conexao= pymysql.connect(**DB_CONFIG)
 cursor= conexao.cursor()
