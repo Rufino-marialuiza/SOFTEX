@@ -36,7 +36,7 @@ try:
     conexao= pymysql.connect(**DB_CONFIG)
 
     cursor= conexao.cursor()
-    cursor.execute("CREATE TABLE Alugados ( titulo VARCHAR(100) NOT NULL)")
+    cursor.execute("ALTER TABLE disponiveis ADD COLUMN filme_id INT NOT NULL AUTO_INCREMENT")
     conexao.commit()
 
 except pymysql.Error as e:
