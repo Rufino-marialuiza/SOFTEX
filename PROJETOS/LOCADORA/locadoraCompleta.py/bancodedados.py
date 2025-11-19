@@ -1,4 +1,4 @@
-'''#conectei com o banco de dados do mysql !instalar o PYMYSQL!, criei as tabelas
+'''
 import pymysql.cursors
 
 DB_CONFIG = {

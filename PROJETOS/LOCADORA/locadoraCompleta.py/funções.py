@@ -105,8 +105,8 @@ def devolucao():
 def alugar():
     titulo=input('Titulo do filme:').lower()
 
-    cursor.execute("SELECT titulo FROM filmes")
-    existe = cursor.fetchall()
+    cursor.execute("SELECT titulo FROM filmes WHERE titulo = %s", (titulo,))
+    existe = cursor.fetchone()
 
     if existe:
         cursor.execute("SELECT titulo FROM disponiveis WHERE titulo = %s", (titulo,))
