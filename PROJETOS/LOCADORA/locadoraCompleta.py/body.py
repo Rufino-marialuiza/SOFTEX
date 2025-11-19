@@ -33,7 +33,7 @@ def menu():
         elif opcao == 4:
             funções.alugar()
         elif opcao == 5:
-            print("Obrigada e até logo :)")
+            funções.fechar()
             break
 
 if __name__ == "__main__":

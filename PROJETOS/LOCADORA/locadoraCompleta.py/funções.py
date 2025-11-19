@@ -1,16 +1,34 @@
 
+import pymysql
 
+DB_CONFIG = {
+    "host": "localhost",
+    "user": "root",
+    "password": "bolinhodegom4.",
+    "database": "locadora",
+    "port": 3306}
 
-Listafilmes=[]
-alugados=[]
+conexao= pymysql.connect(**DB_CONFIG)
+
+cursor= conexao.cursor()
+
+Listafilmes=[] #retirar depois
+alugados=[] #retirar depois
 
 def cadastrar():
-    filme=input('Nome do filme:').lower()
-    if filme in Listafilmes:
+    titulo=input('Titulo do filme:').lower()
+    if titulo in Listafilmes:#aqui ein como
         print('Filme já adicionado!\n')
     else:
-        Listafilmes.append(filme)
-        print('Filme adicionado!\n')
+        ano_lancamento=int(input("Ano de Lançamento:"))
+        genero=input("Gênero:")
+        duracao_min=int(input("Duração do filme:"))
+        
+        dados = (titulo, ano_lancamento, genero, duracao_min)
+
+        cursor.execute("INSERT INTO Filmes (titulo, ano_lancamento, genero, duracao_min) VALUES (%s, %s, %s, %s)", dados)
+        conexao.commit()
+        print(f"✅ Filme inserido com sucesso! ID Gerado: {cursor.lastrowid}")
 
 def remover():
     filme=input('Nome do filme:').lower()
@@ -66,3 +84,8 @@ def alugar():
         alugados.append(filme)
         Listafilmes.remove(filme)
         print('Filme alugado, aproveita e faça a devolução em até 30 dias!\n')
+
+def fechar():
+    cursor.close()
+    conexao.close()
+    print("Obrigada e até logo :)")
