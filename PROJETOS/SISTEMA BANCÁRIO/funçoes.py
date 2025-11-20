@@ -1,24 +1,63 @@
-import random
+import random, pymysql, os, corpo
+from dotenv import load_dotenv
+load_dotenv()
+
+DB_CONFIG = {
+    "host": os.getenv("DB_HOST"), #criar os arquivos gitignore e .ven
+    "user": os.getenv("DB_USER"),
+    "password": os.getenv("DB_PASSWORD"),
+    "database": os.getenv("DB_DATABASE"),
+    "port": int(os.getenv("DB_PORT", 3306))
+}
+
+conexao = None
+cursor = None
+
+conexao= pymysql.connect(**DB_CONFIG)
+cursor= conexao.cursor()
+
 cadastros=[]
 agencia=['32', '74', '12']
 extratos=[]
 
-def cadastro(nome):
-  usuario=[]
-  usuario.append(nome)
-  escolhaDeAgencia=random.choice(agencia)
-  usuario.append(escolhaDeAgencia)
-  numerodaconta= len(cadastros)+1
-  usuario.append(str(numerodaconta))
-  print(f"Cadastro realizado! sua Agencia é: {escolhaDeAgencia} e o número de sua conta é: {numerodaconta}")
-  usuario.append('0')
-  cadastros.append(usuario.copy())
+def mostrarSaldo():
+   
+   cursor.execute("SELECT FROM cadastros WHERE nome = %s", (nome,)) #variavel nome
 
-def acharUsuario(nome, agencia, conta):
-  for u in cadastros:
-    if u[0]==nome and u[1]==agencia and u[2]==conta:
-      return u
-  return None
+def cadastro():
+
+    nome=input("Nome completo:")
+    escolhaDeAgencia=random.choice(agencia)
+    saldo=0
+
+    cursor.execute("INSERT INTO sisbancario(nome, agencia, saldo) VALUES (%s,%s,%s)",(nome,escolhaDeAgencia,saldo))
+    
+    print(f"🎉 Bem vindo(a), {nome}! sua Agencia é: {escolhaDeAgencia} e o número de sua conta é: {cursor.lastrowid}")
+    corpo.menu_conta(cursor.lastrowid)
+
+def acharUsuario():
+    
+    print("\n~ VALIDAÇÃO ~")
+    nome=input("Seu nome:")
+    agencia=int(input("Digite sua agencia:"))
+    conta=int(input("numero da conta"))
+
+    cursor.execute("SELECT * FROM sisbancario WHERE nome = %s agencia = %s conta = %s", (nome,agencia, conta)) #verif. se isso ta certo
+    cadastrado= cursor.fetchone()
+
+    if cadastrado:
+      print("\n👋 Bem vindo(a) de volta!\n")
+      corpo.menu_conta(conta)
+
+    else:
+      escolha=input("\n❌ Cadastro não encontrado! tentar novamente?(S/N)").upper()
+
+      while escolha!= 'S' and escolha!='N':
+         print("Digite novamente!")
+         escolha=input("\n❌ Cadastro não encontrado! tentar novamente?(S/N)").upper()
+
+      if escolha == 'S':
+         acharUsuario()
 
 def depositar(usuario,valor):
     usuario[3]=str(float(usuario[3])+valor)
@@ -41,3 +80,8 @@ def extrato():
     for i in range(len(extratos)):
         print(extratos[i])
     print('-'*19)
+
+def sair():
+   cursor.close()
+   conexao.close()
+   print("Até logo! 😉")

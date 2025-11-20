@@ -1,83 +1,94 @@
 import funçoes
+import inquirer
 
-cont=1
-while cont==1:
-  print("-"*7,"BANCO",'-'*7)
-  entrarNoBanco=input("Deseja entrar no banco(ENTRAR) ou sair(SAIR):").upper()
-
-  while entrarNoBanco!='SAIR' and entrarNoBanco!='ENTRAR':
-    print("Entrada inválida, digite novamente!")
-    entrarNoBanco=input("Deseja entrar no banco(ENTRAR) ou sair(SAIR):").upper()
-
-  if entrarNoBanco=='SAIR':
-    cont=0
-    print("Até logo! 😉")
-  
-  else:
-
-    entrada= input("Olá! voce já possui uma conta?(S/N)").upper()
+def menu_conta(conta):
     
-    while entrada!='S' and entrada!='N':
-        print("Entrada não valida, digite novamente S ou N!")
-        entrada= input("Olá! voce já possui uma conta?(S/N)").upper()
+    while True:
+        questions = [
+            inquirer.List(
+                'opcao',
+                message="🏦 Menu do Banco",
+                choices=[
+                    ('Mostrar Saldo Atual', 0),
+                    ('Depositar', 1),
+                    ('Saque', 2),
+                    ('Apresentar Extrato', 3),
+                    ('Sair da Conta', 4)
+                ],
+                carousel=True # Ajuda na navegação, como
+            )
+        ]
+        
+        resposta = inquirer.prompt(questions)
+            
+        opcao = resposta['opcao']
 
-    if entrada=='S':
-      print("~ VALIDAÇÃO ~")
-      nome=input("NOME COMPLETO:").upper()
-      agencia=input("AGÊNCIA:")
-      conta=input("CONTA:")
+        if opcao == 0:
+            # Assumindo que o saldo está na posição 3 de 'usuario'
+            print(f"\n💵 Saldo atual: R$ {usuario[3]:.2f}\n") 
 
-      usuario=funçoes.acharUsuario(nome, agencia,conta)
+        elif opcao == 1:
+            deposito_q = [inquirer.Text('deposito', message="💰 Valor do depósito")]
+            deposito_a = inquirer.prompt(deposito_q)
+            if deposito_a:
+                try:
+                    deposito = float(deposito_a['deposito'])
+                    funçoes.depositar(usuario, deposito)
+                except ValueError:
+                    print("\n❌ Valor inválido. Tente novamente.\n")
 
-      while usuario is None:
-        print("cadastro não encontrado, digite novamente!")
-        print("~ VALIDAÇÃO ~")
-        nome=input("NOME COMPLETO:").upper()
-        agencia=input("AGÊNCIA:")
-        conta=input("CONTA:")
-      print("Bem vindo(a) de volta!")
-    
-    else:
-      print("~ CADASTRO ~")
-      nome=input("NOME COMPLETO:").upper()
-      funçoes.cadastro(nome)
-      usuario=funçoes.cadastros[-1]
-      print("Bem vindo(a)!")
+        elif opcao == 2:
+            # Verifica se o saldo é zero antes de pedir o valor do saque
+            if float(usuario[3]) == 0:
+                print("\n❌ Saldo insuficiente!\n")
+            else:
+                saque_q = [inquirer.Text('saque', message="💸 Valor do saque")]
+                saque_a = inquirer.prompt(saque_q)
+                if saque_a:
+                    try:
+                        saque = float(saque_a['saque'])
+                        funçoes.sacar(usuario, saque)
+                    except ValueError:
+                        print("\n❌ Valor inválido. Tente novamente.\n")
 
-    aux=1
-    while aux==1:
-      print("-"*7,"BANCO",'-'*7)
-      print("OPÇÃO 0: MOSTRAR SALDO ATUAL")
-      print("OPÇÃO 1: DEPOSITAR")
-      print("OPÇÃO 2: SAQUE")
-      print("OPÇÃO 3: APRESENTAR EXTRATO")
-      print("OPÇÃO 4: SAIR DA CONTA")
-      #print("OPÇÃO 5: PAGAMENTO PIX")# a mais
-      #print("OPÇÃO 6: EMPRESTIMO/FINANCIAMENTO") # a mais
+        elif opcao == 3:
+            print("\n📜 Extrato:\n")
+            funçoes.extrato()
+            print("\n")
 
-      opcao=int(input("Sua opção:"))
-      
-      while 4<opcao and opcao<0:
-        print("Opção inválida, digite novamente!")
-        opcao=int(input("Sua opção:"))
+        elif opcao == 4:
+            print("\n👋 Saindo da conta..\n")
+            return # Sai do loop e retorna para o menu principal
 
-      if opcao==0:
-        print(f"Saldo atual: {usuario[3]}")
+def main():
 
-      elif opcao==1:
-        deposito=float(input("Valor do depósito:"))
-        funçoes.depositar(usuario,deposito)
+    while True:
+        inicio = [
+            inquirer.List(
+                'entrarNoBanco',
+                message="Deseja entrar no banco ou sair?",
+                choices=['ENTRAR', 'SAIR'],
+            )
+        ]
+        resposta = inquirer.prompt(inicio)
+        
+        if resposta['entrarNoBanco'] == 'SAIR':
+            funçoes.sair()
+            break
 
-      elif opcao==2:
-        if float(usuario[3])==0:
-           print("Saldo insuficiente!")
-        else:   
-          saque=float(input("Valor do saque:"))
-          funçoes.sacar(usuario,saque)
+        conta = [
+            inquirer.List(
+                'entrada',
+                message="Olá! Você já possui uma conta?",
+                choices=[('Sim', 'S'), ('Não', 'N')],
+            )
+        ]
+        resposta = inquirer.prompt(conta)
+        
+        if resposta['entrada'] == 'S': 
+            funçoes.acharUsuario()
+        else:
+            funçoes.cadastro()
 
-      elif opcao==3:
-        funçoes.extrato()
-      
-      elif opcao==4:
-        aux=0
-        print("Saindo da conta..")
+if __name__ == '__main__':
+    main()
