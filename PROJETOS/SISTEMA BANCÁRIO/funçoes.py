@@ -21,7 +21,7 @@ extratos=[]
 
 def cadastro():
 
-    nome=input("Nome completo:")
+    nome=input("Nome completo:").lower()
     escolhaDeAgencia=random.choice(agencia)
     saldo=0.00
 
@@ -34,11 +34,11 @@ def cadastro():
 def acharUsuario():
     
     print("\n~ VALIDAÇÃO ~")
-    nome=input("Seu nome:")
+    nome=input("Seu nome:").lower()
     agencia=int(input("Digite sua agencia:"))
     conta=int(input("numero da conta"))
 
-    cursor.execute("SELECT * FROM cadastros WHERE nome = %s agencia = %s conta = %s", (nome,agencia, conta)) #verif. se isso ta certo
+    cursor.execute("SELECT * FROM cadastros WHERE nome = %s AND agencia = %s AND conta = %s", (nome,agencia, conta))
     cadastrado= cursor.fetchone()
 
     if cadastrado:
@@ -58,23 +58,29 @@ def acharUsuario():
 def mostrarSaldo(conta):
    
    cursor.execute("SELECT saldo FROM cadastros WHERE conta = %s", (conta,))
-   saldo= cursor.fetchone()
-   print(f"💵 Saldo atual: R$ {saldo}")
+   saldo= cursor.fetchone()[0]
+   print(f"💵 Saldo atual: R$ {saldo:.2f}")
 
 def depositar(conta):
 
     deposito= float(input("💰 Valor do depósito:"))
 
-    cursor.execute("UPDATE cadastros SET saldo = %s WHERE conta = %s", (deposito,conta))
+    while deposito<=0:
+       print("❌ O valor do depósito deve ser positivo, digite novamente.")
+       deposito= float(input("💰 Valor do depósito:"))
+
+    cursor.execute("UPDATE cadastros SET saldo = saldo + %s WHERE conta = %s", (deposito,conta))
     conexao.commit()
 
     print("Depósito realizado!")
-    #extratos.append(f'Depositado ✅: {valor}') historico!
+    
+    cursor.execute("INSERT INTO extratos(conta, tipo, valor, data_hora) VALUES(%s,%s,%s, NOW())",(conta,'DEPÓSITO',deposito))
+    conexao.commit()
 
 def sacar(conta):
 
     cursor.execute("SELECT saldo FROM cadastros WHERE conta = %s", (conta,))
-    saldo= cursor.fetchone()
+    saldo= cursor.fetchone()[0]
 
     if saldo==0.00:
        print("❌ Saldo insuficiente!")
@@ -86,21 +92,29 @@ def sacar(conta):
             print('Saque inválido, digite um novo valor')
             saque=float(input("💸 Valor do saque:"))
 
-        valorAtualizado= saldo-saque
-
-        cursor.execute("UPDATE cadastros SET saldo = %s WHERE conta = %s", (valorAtualizado,conta))
+        cursor.execute("UPDATE cadastros SET saldo = saldo - %s WHERE conta = %s", (saque,conta))
         conexao.commit()
 
         print("Saque realizado!")
-        #extratos.append(f'Sacado ❌: {saque}') historico!
 
-def extrato(): #como fazer esse extrato no mysql
-  print('-'*5, 'EXTRATO','-'*5)
-  if len(extratos)==0:
+        cursor.execute("INSERT INTO extratos(conta, tipo, valor, data_hora) VALUES(%s,%s,%s, NOW())",(conta,'SAQUE',saque))
+        conexao.commit()
+
+def extrato(conta): 
+
+    print('-'*5, 'EXTRATO','-'*5)
+
+    cursor.execute("SELECT tipo, valor, DATE_FORMAT(data_hora, '%%d/%%m/%%Y %%H:%%i') AS data_formatada FROM extratos WHERE conta = %s ORDER BY data_hora DESC",(conta))
+    movimentacoes= cursor.fetchall()
+
+    if movimentacoes== None:
         print("Nenhuma movimentação registrada.")
-  else:
-    for i in range(len(extratos)):
-        print(extratos[i])
+
+    else:
+        for tipo,valor,data in movimentacoes:
+            simbolo = '✅' if tipo == 'DEPÓSITO' else '❌'
+            print(f"[{data}] {tipo} {simbolo}: R$ {valor}")
+
     print('-'*19)
 
 def sair():

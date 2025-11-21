@@ -15,7 +15,7 @@ def menu_conta(conta):
                     ('Apresentar Extrato', 3),
                     ('Sair da Conta', 4)
                 ],
-                carousel=True # Ajuda na navegação, como
+                carousel=True
             )
         ]
         
@@ -23,7 +23,7 @@ def menu_conta(conta):
         opcao = resposta['opcao']
 
         if opcao == 0:
-            funçoes.mostrarSaldo()
+            funçoes.mostrarSaldo(conta)
 
         elif opcao == 1:
             funçoes.depositar(conta)
@@ -36,7 +36,7 @@ def menu_conta(conta):
 
         elif opcao == 4:
             print("\nSaindo da conta..\n")
-            return # Sai do loop e retorna para o menu principal
+            return
 
 def main():
 
