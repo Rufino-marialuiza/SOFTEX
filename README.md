@@ -1,4 +1,4 @@
-#📁 **Repositório de Prática Python**
+## 📂 Repositório de atividades Python
 
 Este repositório contem exercicios base para praticar a logica em python além de 2 projetos aprofundados: um sistema de locadora e um sistema bancário utilizando o MYSQL e a biblioteca Inquirer para uma interface interativa.
 
