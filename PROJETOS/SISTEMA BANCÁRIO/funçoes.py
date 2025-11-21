@@ -3,7 +3,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 DB_CONFIG = {
-    "host": os.getenv("DB_HOST"), #criar os arquivos gitignore e .ven
+    "host": os.getenv("DB_HOST"),
     "user": os.getenv("DB_USER"),
     "password": os.getenv("DB_PASSWORD"),
     "database": os.getenv("DB_DATABASE"),
@@ -16,21 +16,17 @@ cursor = None
 conexao= pymysql.connect(**DB_CONFIG)
 cursor= conexao.cursor()
 
-cadastros=[]
 agencia=['32', '74', '12']
 extratos=[]
-
-def mostrarSaldo():
-   
-   cursor.execute("SELECT FROM cadastros WHERE nome = %s", (nome,)) #variavel nome
 
 def cadastro():
 
     nome=input("Nome completo:")
     escolhaDeAgencia=random.choice(agencia)
-    saldo=0
+    saldo=0.00
 
-    cursor.execute("INSERT INTO sisbancario(nome, agencia, saldo) VALUES (%s,%s,%s)",(nome,escolhaDeAgencia,saldo))
+    cursor.execute("INSERT INTO cadastros (nome, agencia, saldo) VALUES (%s,%s,%s)",(nome,escolhaDeAgencia,saldo))
+    conexao.commit()
     
     print(f"🎉 Bem vindo(a), {nome}! sua Agencia é: {escolhaDeAgencia} e o número de sua conta é: {cursor.lastrowid}")
     corpo.menu_conta(cursor.lastrowid)
@@ -42,7 +38,7 @@ def acharUsuario():
     agencia=int(input("Digite sua agencia:"))
     conta=int(input("numero da conta"))
 
-    cursor.execute("SELECT * FROM sisbancario WHERE nome = %s agencia = %s conta = %s", (nome,agencia, conta)) #verif. se isso ta certo
+    cursor.execute("SELECT * FROM cadastros WHERE nome = %s agencia = %s conta = %s", (nome,agencia, conta)) #verif. se isso ta certo
     cadastrado= cursor.fetchone()
 
     if cadastrado:
@@ -59,20 +55,46 @@ def acharUsuario():
       if escolha == 'S':
          acharUsuario()
 
-def depositar(usuario,valor):
-    usuario[3]=str(float(usuario[3])+valor)
+def mostrarSaldo(conta):
+   
+   cursor.execute("SELECT saldo FROM cadastros WHERE conta = %s", (conta,))
+   saldo= cursor.fetchone()
+   print(f"💵 Saldo atual: R$ {saldo}")
+
+def depositar(conta):
+
+    deposito= float(input("💰 Valor do depósito:"))
+
+    cursor.execute("UPDATE cadastros SET saldo = %s WHERE conta = %s", (deposito,conta))
+    conexao.commit()
+
     print("Depósito realizado!")
-    extratos.append(f'Depositado ✅: {valor}')
+    #extratos.append(f'Depositado ✅: {valor}') historico!
 
-def sacar(usuario, saque):
-    while saque>float(usuario[3]) or saque<=0:
-        print('Saque inválido, digite um novo valor')
-        saque=float(input("Valor do saque:"))
-    usuario[3]=str(float(usuario[3])-saque)
-    print("Saque realizado!")
-    extratos.append(f'Sacado ❌: {saque}')
+def sacar(conta):
 
-def extrato():
+    cursor.execute("SELECT saldo FROM cadastros WHERE conta = %s", (conta,))
+    saldo= cursor.fetchone()
+
+    if saldo==0.00:
+       print("❌ Saldo insuficiente!")
+
+    else:
+        saque=float(input("💸 Valor do saque:"))
+
+        while saque>saldo or saque<=0:
+            print('Saque inválido, digite um novo valor')
+            saque=float(input("💸 Valor do saque:"))
+
+        valorAtualizado= saldo-saque
+
+        cursor.execute("UPDATE cadastros SET saldo = %s WHERE conta = %s", (valorAtualizado,conta))
+        conexao.commit()
+
+        print("Saque realizado!")
+        #extratos.append(f'Sacado ❌: {saque}') historico!
+
+def extrato(): #como fazer esse extrato no mysql
   print('-'*5, 'EXTRATO','-'*5)
   if len(extratos)==0:
         print("Nenhuma movimentação registrada.")

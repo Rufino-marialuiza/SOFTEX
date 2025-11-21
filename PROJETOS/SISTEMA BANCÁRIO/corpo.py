@@ -20,44 +20,22 @@ def menu_conta(conta):
         ]
         
         resposta = inquirer.prompt(questions)
-            
         opcao = resposta['opcao']
 
         if opcao == 0:
-            # Assumindo que o saldo está na posição 3 de 'usuario'
-            print(f"\n💵 Saldo atual: R$ {usuario[3]:.2f}\n") 
+            funçoes.mostrarSaldo()
 
         elif opcao == 1:
-            deposito_q = [inquirer.Text('deposito', message="💰 Valor do depósito")]
-            deposito_a = inquirer.prompt(deposito_q)
-            if deposito_a:
-                try:
-                    deposito = float(deposito_a['deposito'])
-                    funçoes.depositar(usuario, deposito)
-                except ValueError:
-                    print("\n❌ Valor inválido. Tente novamente.\n")
+            funçoes.depositar(conta)
 
         elif opcao == 2:
-            # Verifica se o saldo é zero antes de pedir o valor do saque
-            if float(usuario[3]) == 0:
-                print("\n❌ Saldo insuficiente!\n")
-            else:
-                saque_q = [inquirer.Text('saque', message="💸 Valor do saque")]
-                saque_a = inquirer.prompt(saque_q)
-                if saque_a:
-                    try:
-                        saque = float(saque_a['saque'])
-                        funçoes.sacar(usuario, saque)
-                    except ValueError:
-                        print("\n❌ Valor inválido. Tente novamente.\n")
+            funçoes.sacar(conta)
 
         elif opcao == 3:
-            print("\n📜 Extrato:\n")
-            funçoes.extrato()
-            print("\n")
+            funçoes.extrato(conta)
 
         elif opcao == 4:
-            print("\n👋 Saindo da conta..\n")
+            print("\nSaindo da conta..\n")
             return # Sai do loop e retorna para o menu principal
 
 def main():
